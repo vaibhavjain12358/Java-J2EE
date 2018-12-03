@@ -1,0 +1,110 @@
+
+********************************************************************************
+
+CREATE TABLE USERS(  
+USER_ID INT            NOT NULL,  
+USER_NAME VARCHAR (20) NOT NULL,  
+PASSWORD VARCHAR (20) NOT NULL, 
+TYPE VARCHAR (10)NOT NULL, 
+ 
+PRIMARY KEY (USER_ID)
+);  
+
+DROP SEQUENCE USERS_seq;
+CREATE SEQUENCE USERS_seq START WITH 1;
+
+CREATE OR REPLACE TRIGGER USERS_trigger 
+BEFORE INSERT ON USERS 
+FOR EACH ROW
+BEGIN
+  SELECT USERS_seq.NEXTVAL
+  INTO   :new.USER_ID
+  FROM   dual;
+END;
+
+********************************************************************************
+CREATE TABLE assets(
+  asset_id number(10) primary key,
+  category varchar(20) NOT NULL,
+  stock number(3) NOT NULL,
+  availability number(3) NOT NULL,
+  flag varchar(8) DEFAULT 'Active'
+);
+
+*******************************************************************************
+ CREATE TABLE Users_Assets (
+    USER_ID int references users(user_id) NOT NULL,
+    ASSET_ID int references assets(asset_id)NOT NULL,
+    BORROWING_DATE  DATE default sysdate,
+    EXPECTED_RETURN_DATE DATE default (sysdate +15) ,
+    FINE varchar(20)
+);
+
+
+********************************************************************************
+select * from Users_Assets;
+
+DROP SEQUENCE ASSETS_seq;
+CREATE SEQUENCE ASSETS_seq START WITH 100;
+
+CREATE OR REPLACE TRIGGER ASSETS_trigger 
+BEFORE INSERT ON ASSETS 
+FOR EACH ROW
+BEGIN
+  SELECT ASSETS_seq.NEXTVAL
+  INTO   :new.asset_id
+  FROM   dual;
+END;
+
+********************************************************************************
+CREATE TABLE assetsHistory(
+  asset_id number(10) NOT NULL,
+  category varchar(20) NOT NULL,
+  stock number(3) NOT NULL,
+  availability number(3) NOT NULL
+ );
+ 
+********************************************************************************
+CREATE TABLE Users_Assets (
+    USER_ID int references users(user_id) NOT NULL,
+    ASSET_ID int references assets(asset_id)NOT NULL,
+    BORROWING_DATE  DATE default sysdate,
+    EXPECTED_RETURN_DATE DATE default (sysdate +15) ,
+    FINE varchar(20)
+);
+********************************************************************************
+
+
+
+desc users;
+
+select * from Users_Assets;
+delete from Users_Assets;
+
+select * from users;
+
+select user_id,user_name from users where user_name !='Admin';
+
+select * from users order by user_id;
+select * from assets;
+select * from assetsHistory;
+
+update assets set flag='Active' where asset_id=101;
+ 
+ update assets set availability=(availability+9) where asset_id=100;
+ 
+ select asset_id,category,availability from assets natural join users_assets where user_id='28';
+ 
+ select locid, locname, depname from loctemp
+natural join deptemp;
+ 
+delete from assetsHistory;
+delete from USERS;
+
+SELECT (Sysdate + 15 ) newDate FROM DUAL
+
+select * from ADMIN;
+commit;
+insert into ADMIN values ( 1 , 'Admin', 'qwerty');
+
+insert into USERS values ( 1,'Ashish', 'qwerty','User');
